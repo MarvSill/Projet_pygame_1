@@ -26,8 +26,8 @@ perso = pygame.sprite.Sprite()
 pygame.sprite.Sprite.__init__(perso)
 perso.image = pygame.image.load("persojaune.png").convert()
 perso.rect = perso.image.get_rect()
-perso.rect.x = 30
-perso.rect.y = 30
+perso.rect.x = 300
+perso.rect.y = 300
 
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fond)
@@ -53,7 +53,7 @@ while continuer:
             if event.key == K_LEFT:
                 direction = "gauche"
             if event.key == K_UP:
-                direction = "haut"
+                direction == "haut"
 
     if direction == "droite":
         perso.rect.x += 3
