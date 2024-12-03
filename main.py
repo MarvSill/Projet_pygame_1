@@ -64,6 +64,7 @@ while continuer:
     elif direction == "haut":
         perso.rect.y += -3
 
+
     pygame.display.flip()
     fenetre.fill((0, 0, 0))
     clock.tick(60)
