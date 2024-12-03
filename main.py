@@ -92,6 +92,7 @@ while running:
             pause = True
             liste_des_sprites.add(texte)
 
+
     pygame.display.flip()
     clock.tick(60)
 
