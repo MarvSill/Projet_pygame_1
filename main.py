@@ -64,14 +64,72 @@ class Fantome(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.vitesse_x = 3
+        self.vitesse_y = 0
+        self.temps_du_dernier_changement = pygame.time.get_ticks()
+
+    def bouger_aleatoirement(self):
+        self.rect.x += self.vitesse_x
+        self.rect.y += self.vitesse_y
+        if self.rect.y > HAUTEUR:
+            self.rect.y -= 549
+        elif self.rect.x > LARGEUR:
+            self.rect.x -= 799
+        elif self.rect.y + 550 < HAUTEUR:
+            self.rect.y += 549
+        elif self.rect.x + 800 < LARGEUR:
+            self.rect.x += 799
+
+
+        self.changement_direction()
+
+    def changement_direction(self):
+        temps_actuel = pygame.time.get_ticks()
+        if self.temps_du_dernier_changement + 500 <= temps_actuel:
+            nombre_aleatoire = random.randint(1,4)
+            if nombre_aleatoire == 1:
+                self.vitesse_x = 3
+                self.vitesse_y = 0
+            elif nombre_aleatoire == 2:
+                self.vitesse_x = -3
+                self.vitesse_y = 0
+            elif nombre_aleatoire == 3:
+                self.vitesse_x = 0
+                self.vitesse_y = 3
+            elif nombre_aleatoire == 4:
+                self.vitesse_x = 0
+                self.vitesse_y = -3
+            self.temps_du_dernier_changement = temps_actuel
+
+
+
+
+
+            #Changement de direction
+
+
+
+x_aleatoire1 = random.randint(20, 400)
+y_aleatoire1 = random.randint(20, 400)
+x_aleatoire2 = random.randint(20, 400)
+y_aleatoire2 = random.randint(20, 400)
+
+
+fantome1 = Fantome(x_aleatoire1, y_aleatoire1)
+fantome2 = Fantome(x_aleatoire2, y_aleatoire2)
+
+
+
 
 
 x_aleatoire = random.randint(200, 400)
 y_aleatoire = random.randint(200, 400)
 
 fantomes = []
-fantome1 = Fantome(x_aleatoire, y_aleatoire)
+
 fantomes.append(fantome1)
+fantomes.append(fantome2)
+
 
 perso = Pacman()
 
@@ -79,7 +137,10 @@ liste_des_sprites = pygame.sprite.Group()
 liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
+liste_des_sprites.add(fantome2)
+
 #liste_des_sprites est tout ce qui est afficher sur l'écran
+
 
 score = 0
 
@@ -104,6 +165,14 @@ direction = "droite"
 while running:
     fenetre.fill((0, 0, 0))
     liste_des_sprites.draw(fenetre)
+
+
+    fantome1.bouger_aleatoirement()
+    fantome2.bouger_aleatoirement()
+
+
+
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -156,6 +225,7 @@ while running:
                 fantome.kill()
                 score += 1
                 texte2.image = police.render("Le score est de " + str(score), 1, (10, 10, 10), (255, 90, 20))
+
 
     pygame.display.flip()
     clock.tick(60)
