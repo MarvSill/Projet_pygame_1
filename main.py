@@ -123,12 +123,19 @@ while running:
     if pause == False:
         if direction == "droite":
             perso.rect.x += 3
+            perso.tourne_vers_droit()
+
         elif direction == "bas":
             perso.rect.y += 3
+            perso.tourne_vers_bas()
+
         elif direction == "gauche":
             perso.rect.x -= 3
+            perso.tourne_vers_gauche()
+
         elif direction == "haut":
             perso.rect.y -= 3
+            perso.tourne_vers_haut()
 
         if perso.destroy():
             pause = True
