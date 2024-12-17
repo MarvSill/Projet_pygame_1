@@ -1,40 +1,42 @@
 import pygame
 from pygame.locals import *
-from random import randint
+import random
+
+
+
+
+
+
 
 pygame.init()
-LARGEUR = 600
-HAUTEUR = 600
+LARGEUR = 800
+HAUTEUR = 550
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
 
 fond = pygame.sprite.Sprite()
-pygame.sprite.Sprite.__init__(fond)
 fond.image = pygame.image.load("snakebackground.png").convert_alpha()
 fond.rect = fond.image.get_rect()
-
 fond.rect.x = 0
 fond.rect.y = 0
-# Stockage du sprite dans une liste de sprites
-liste_des_sprites = pygame.sprite.LayeredUpdates()
-liste_des_sprites.add(fond)
 
 
 class Fantome(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("fantome1.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-x_aleatoire = randint(20,40)
-y_aleatoire = randint(20,40)
 
-fantome1 = Fantome(x_aleatoire,y_aleatoire)
+x_aleatoire = random.randint(20, 40)
+y_aleatoire = random.randint(20, 40)
+
+fantome1 = Fantome(x_aleatoire, y_aleatoire)
 
 
-class Pacman(pygame.sprite.Sprite):
+class Perso(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("persojaune.png").convert_alpha()
@@ -44,6 +46,16 @@ class Pacman(pygame.sprite.Sprite):
         self.angle = 0
         self.perso = 0
 
+    def destroy(self):
+        if (
+                self.rect.top > HAUTEUR
+                or self.rect.bottom < 0
+                or self.rect.left > LARGEUR
+                or self.rect.right < 0
+        ):
+            self.kill()
+            return True
+        return False
 
     def tourne_vers_haut(self):
         angle_de_rotation = 90 - self.angle
@@ -66,25 +78,34 @@ class Pacman(pygame.sprite.Sprite):
         self.angle = 0
 
 
-perso = Pacman()
 
+perso = Perso()
 
+liste_des_sprites = pygame.sprite.Group()
+
+liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
-liste_des_sprites.add(fond)
 
 
-continuer = True
+police = pygame.font.Font(None, 36)
+texte = pygame.sprite.Sprite()
+texte.image = police.render("Gameover", 1, (10, 10, 10), (255, 90, 20))
+texte.rect = texte.image.get_rect()
+texte.rect.centerx = fenetre.get_rect().centerx
+texte.rect.centery = fenetre.get_rect().centery
 
-
+pause = False
+running = True
 direction = "droite"
 
-while continuer:
+while running:
+    fenetre.fill((0, 0, 0))
     liste_des_sprites.draw(fenetre)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            continuer = False
+            running = False
         if event.type == KEYDOWN:
             if event.key == K_RIGHT:
                 direction = "droite"
@@ -96,30 +117,28 @@ while continuer:
             if event.key == K_UP:
                 direction = "haut"
 
+            if event.key == K_r and pause:
+                pause = False
+                direction = "droite"
+                liste_des_sprites.remove(texte)
+                perso = Perso()
+                liste_des_sprites.add(perso)
 
-    if direction == "droite":
-        perso.rect.x += 3
-        perso.tourne_vers_droit()
+    if pause == False:
+        if direction == "droite":
+            perso.rect.x += 3
+        elif direction == "bas":
+            perso.rect.y += 3
+        elif direction == "gauche":
+            perso.rect.x -= 3
+        elif direction == "haut":
+            perso.rect.y -= 3
 
-    elif direction == "bas":
-        perso.rect.y += 3
-        perso.tourne_vers_bas()
-    elif direction == "gauche":
-        perso.rect.x += -3
-        perso.tourne_vers_gauche()
-    elif direction == "haut":
-        perso.rect.y += -3
-        perso.tourne_vers_haut()
+        if perso.destroy():
+            pause = True
+            liste_des_sprites.add(texte)
 
     pygame.display.flip()
-    fenetre.fill((0, 0, 0))
     clock.tick(60)
 
-
-
-
 pygame.quit()
-
-
-
-
