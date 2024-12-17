@@ -2,48 +2,6 @@ import pygame
 from pygame.locals import *
 import random
 
-
-class Pacman(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("persojaune.png").convert_alpha()
-        self.rect = self.image.get_rect()
-        self.rect.x = 30
-        self.rect.y = 30
-        self.angle = 0
-        self.perso = 0
-
-    def destroy(self):
-        if (
-                self.rect.top > HAUTEUR
-                or self.rect.bottom < 0
-                or self.rect.left > LARGEUR
-                or self.rect.right < 0
-        ):
-            self.kill()
-            return True
-        return False
-
-    def tourne_vers_haut(self):
-        angle_de_rotation = 90 - self.angle
-        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
-        self.angle = 90
-
-    def tourne_vers_gauche(self):
-        angle_de_rotation = 180 - self.angle
-        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
-        self.angle = 180
-
-    def tourne_vers_bas(self):
-        angle_de_rotation = 270 - self.angle
-        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
-        self.angle = 270
-
-    def tourne_vers_droit(self):
-        angle_de_rotation = 0 - self.angle
-        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
-        self.angle = 0
-
 pygame.init()
 LARGEUR = 800
 HAUTEUR = 550
@@ -72,6 +30,35 @@ y_aleatoire = random.randint(20, 40)
 fantome1 = Fantome(x_aleatoire, y_aleatoire)
 
 
+class Pacman(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("persojaune.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = 30
+        self.rect.y = 30
+        self.angle = 0
+        self.perso = 0
+
+    def tourne_vers_haut(self):
+        angle_de_rotation = 90 - self.angle
+        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
+        self.angle = 90
+
+    def tourne_vers_gauche(self):
+        angle_de_rotation = 180 - self.angle
+        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
+        self.angle = 180
+
+    def tourne_vers_bas(self):
+        angle_de_rotation = 270 - self.angle
+        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
+        self.angle = 270
+
+    def tourne_vers_droit(self):
+        angle_de_rotation = 0 - self.angle
+        self.image = pygame.transform.rotate(self.image, angle_de_rotation)
+        self.angle = 0
 
 
 
