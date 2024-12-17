@@ -2,6 +2,7 @@ import pygame
 from pygame.locals import *
 import random
 
+
 class Pacman(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -12,12 +13,11 @@ class Pacman(pygame.sprite.Sprite):
         self.angle = 0
 
     def destroy(self):
-        """Überprüft, ob Pacman außerhalb des Spielfelds ist."""
         if (
-            self.rect.top > HAUTEUR
-            or self.rect.bottom < 0
-            or self.rect.left > LARGEUR
-            or self.rect.right < 0
+                self.rect.top > HAUTEUR
+                or self.rect.bottom < 0
+                or self.rect.left > LARGEUR
+                or self.rect.right < 0
         ):
             self.kill()
             return True
@@ -30,25 +30,26 @@ HAUTEUR = 550
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
 
-# Hintergrund
 fond = pygame.sprite.Sprite()
 fond.image = pygame.image.load("snakebackground.png").convert_alpha()
 fond.rect = fond.image.get_rect()
 fond.rect.x = 0
 fond.rect.y = 0
 
+
 class Fantome(pygame.sprite.Sprite):
-    def __init__(self,x,y):
+    def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load("fantome1.png").convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
 
-x_aleatoire = randint(20,40)
-y_aleatoire = randint(20,40)
 
-fantome1 = Fantome(x_aleatoire,y_aleatoire)
+x_aleatoire = random.randint(20, 40)
+y_aleatoire = random.randint(20, 40)
+
+fantome1 = Fantome(x_aleatoire, y_aleatoire)
 
 
 class Pacman(pygame.sprite.Sprite):
@@ -60,7 +61,6 @@ class Pacman(pygame.sprite.Sprite):
         self.rect.y = 30
         self.angle = 0
         self.perso = 0
-
 
     def tourne_vers_haut(self):
         angle_de_rotation = 90 - self.angle
@@ -83,16 +83,16 @@ class Pacman(pygame.sprite.Sprite):
         self.angle = 0
 
 
+
 perso = Pacman()
 
+liste_des_sprites = pygame.sprite.Group()
 
+liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
 
-liste_des_sprites.add(fond)
-liste_des_sprites.add(pacman)
 
-# Gameover-Text
 police = pygame.font.Font(None, 36)
 texte = pygame.sprite.Sprite()
 texte.image = police.render("Gameover", 1, (10, 10, 10), (255, 90, 20))
@@ -121,38 +121,29 @@ while running:
                 direction = "gauche"
             if event.key == K_UP:
                 direction = "haut"
-                
+
             if event.key == K_r and pause:
-              pause = False
-              direction = "droite"
-              liste_des_sprites.remove(texte)
-              pacman = Pacman()
-              liste_des_sprites.add(pacman)
+                pause = False
+                direction = "droite"
+                liste_des_sprites.remove(texte)
+                perso = Pacman()
+                liste_des_sprites.add(perso)
 
-    if direction == "droite":
-        perso.rect.x += 3
-        perso.tourne_vers_droit()
+    if pause == False:
+        if direction == "droite":
+            perso.rect.x += 3
+        elif direction == "bas":
+            perso.rect.y += 3
+        elif direction == "gauche":
+            perso.rect.x -= 3
+        elif direction == "haut":
+            perso.rect.y -= 3
 
-    elif direction == "bas":
-        perso.rect.y += 3
-        perso.tourne_vers_bas()
-    elif direction == "gauche":
-        perso.rect.x += -3
-        perso.tourne_vers_gauche()
-    elif direction == "haut":
-        perso.rect.y += -3
-        perso.tourne_vers_haut()
-
-           
-
-   
-        # Überprüfe, ob Pacman zerstört werden muss
-        if pacman.destroy():
+        if perso.destroy():
             pause = True
             liste_des_sprites.add(texte)
 
     pygame.display.flip()
     clock.tick(60)
-
 
 pygame.quit()
