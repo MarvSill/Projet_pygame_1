@@ -80,6 +80,7 @@ class Fantome(pygame.sprite.Sprite):
         elif self.rect.x + 800 < LARGEUR:
             self.rect.x += 799
 
+
         self.changement_direction()
 
     def changement_direction(self):
@@ -121,33 +122,54 @@ fantome2 = Fantome(x_aleatoire2, y_aleatoire2)
 
 
 
+x_aleatoire = random.randint(200, 400)
+y_aleatoire = random.randint(200, 400)
+
+fantomes = []
+
+fantomes.append(fantome1)
+fantomes.append(fantome2)
+
+
 perso = Pacman()
 
 liste_des_sprites = pygame.sprite.Group()
-
 liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
 liste_des_sprites.add(fantome2)
 
+#liste_des_sprites est tout ce qui est afficher sur l'écran
 
-police = pygame.font.Font(None, 36)
+
+score = 0
+
+police = pygame.font.Font(None, 50)
 texte = pygame.sprite.Sprite()
+texte2 = pygame.sprite.Sprite()
 texte.image = police.render("Gameover", 1, (10, 10, 10), (255, 90, 20))
+texte2.image = police.render("Le score est de " + str(score),1, (10, 10, 10), (255, 90, 20))
 texte.rect = texte.image.get_rect()
 texte.rect.centerx = fenetre.get_rect().centerx
 texte.rect.centery = fenetre.get_rect().centery
+texte2.rect = texte.image.get_rect()
+texte2.rect.centerx = fenetre.get_rect().centerx
+texte2.rect.centery = 330
+
 
 pause = False
 running = True
 direction = "droite"
 
+
 while running:
     fenetre.fill((0, 0, 0))
     liste_des_sprites.draw(fenetre)
 
+
     fantome1.bouger_aleatoirement()
     fantome2.bouger_aleatoirement()
+
 
 
 
@@ -173,6 +195,7 @@ while running:
                 liste_des_sprites.add(perso)
 
     if pause == False:
+
         if direction == "droite":
             perso.rect.x += 3
             perso.tourne_vers_droit()
@@ -192,6 +215,16 @@ while running:
         if perso.destroy():
             pause = True
             liste_des_sprites.add(texte)
+            #le texte est afficher
+            liste_des_sprites.add(texte2)
+
+        for fantome in fantomes:
+            if fantome.rect.colliderect(perso):
+                liste_des_sprites.remove(fantome)
+                fantomes.remove(fantome)
+                fantome.kill()
+                score += 1
+                texte2.image = police.render("Le score est de " + str(score), 1, (10, 10, 10), (255, 90, 20))
 
 
     pygame.display.flip()
