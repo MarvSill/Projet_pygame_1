@@ -56,6 +56,14 @@ fond.rect = fond.image.get_rect()
 fond.rect.x = 0
 fond.rect.y = 0
 
+class Wall(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load("wall.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 class Fantome(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -113,22 +121,26 @@ x_aleatoire1 = random.randint(20, 400)
 y_aleatoire1 = random.randint(20, 400)
 x_aleatoire2 = random.randint(20, 400)
 y_aleatoire2 = random.randint(20, 400)
+#!! Warum immer wieder neu def? ist ja immer wieder das gleiche!?
 
 
 fantome1 = Fantome(x_aleatoire1, y_aleatoire1)
 fantome2 = Fantome(x_aleatoire2, y_aleatoire2)
 
-
-
+wall1 = Wall(x_aleatoire1, y_aleatoire1)
 
 
 x_aleatoire = random.randint(200, 400)
 y_aleatoire = random.randint(200, 400)
 
 fantomes = []
+walls = []
 
 fantomes.append(fantome1)
 fantomes.append(fantome2)
+
+
+walls.append((wall1))
 
 
 perso = Pacman()
@@ -138,6 +150,7 @@ liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
 liste_des_sprites.add(fantome2)
+liste_des_sprites.add(wall1)
 
 #liste_des_sprites est tout ce qui est afficher sur l'écran
 
@@ -147,8 +160,8 @@ score = 0
 police = pygame.font.Font(None, 50)
 texte = pygame.sprite.Sprite()
 texte2 = pygame.sprite.Sprite()
-texte.image = police.render("Gameover", 1, (10, 10, 10), (255, 90, 20))
-texte2.image = police.render("Le score est de " + str(score),1, (10, 10, 10), (255, 90, 20))
+texte.image = police.render("Gameover", 1, (0, 10, 10), (255, 90, 20))
+texte2.image = police.render("Score : " + str(score),1, (10, 10, 10), (0, 128, 128))
 texte.rect = texte.image.get_rect()
 texte.rect.centerx = fenetre.get_rect().centerx
 texte.rect.centery = fenetre.get_rect().centery
@@ -166,12 +179,8 @@ while running:
     fenetre.fill((0, 0, 0))
     liste_des_sprites.draw(fenetre)
 
-
-    fantome1.bouger_aleatoirement()
-    fantome2.bouger_aleatoirement()
-
-
-
+    for fantome in fantomes:
+        fantome.bouger_aleatoirement()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -191,6 +200,7 @@ while running:
                 pause = False
                 direction = "droite"
                 liste_des_sprites.remove(texte)
+                liste_des_sprites.remove(texte2)
                 perso = Pacman()
                 liste_des_sprites.add(perso)
 
@@ -217,6 +227,10 @@ while running:
             liste_des_sprites.add(texte)
             #le texte est afficher
             liste_des_sprites.add(texte2)
+            for fantome in fantomes:
+                fantome.kill()
+            for wall in walls:
+                wall.kill()
 
         for fantome in fantomes:
             if fantome.rect.colliderect(perso):
@@ -224,7 +238,32 @@ while running:
                 fantomes.remove(fantome)
                 fantome.kill()
                 score += 1
-                texte2.image = police.render("Le score est de " + str(score), 1, (10, 10, 10), (255, 90, 20))
+                texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
+                x_aleatoire_fantome = random.randint(20, LARGEUR - 40)
+                y_aleatoire_fantome = random.randint(20, HAUTEUR - 40)
+                nouveau_fantome = Fantome(x_aleatoire_fantome, y_aleatoire_fantome)
+                x_aleatoire_wall = random.randint(20, LARGEUR - 40)
+                y_aleatoire_wall = random.randint(20, HAUTEUR - 40)
+                nouveau_wall = Wall(x_aleatoire_wall, y_aleatoire_wall)
+                fantomes.append(nouveau_fantome)
+                walls.append(nouveau_wall)
+                liste_des_sprites.add(nouveau_fantome)
+                liste_des_sprites.add(nouveau_wall)
+
+
+        for wall in walls:
+            if wall.rect.colliderect(perso):
+                liste_des_sprites.remove(perso)
+                perso.kill()
+                pause = True
+                liste_des_sprites.add(texte)
+                # le texte est afficher
+                liste_des_sprites.add(texte2)
+                for fantome in fantomes:
+                    fantome.kill()
+                for wall in walls:
+                    wall.kill()
+
 
 
     pygame.display.flip()
