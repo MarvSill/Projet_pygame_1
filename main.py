@@ -121,7 +121,6 @@ x_aleatoire1 = random.randint(20, 400)
 y_aleatoire1 = random.randint(20, 400)
 x_aleatoire2 = random.randint(20, 400)
 y_aleatoire2 = random.randint(20, 400)
-#!! Warum immer wieder neu def? ist ja immer wieder das gleiche!?
 
 
 fantome1 = Fantome(x_aleatoire1, y_aleatoire1)
@@ -203,6 +202,9 @@ while running:
                 liste_des_sprites.remove(texte2)
                 perso = Pacman()
                 liste_des_sprites.add(perso)
+                liste_des_sprites.add(fantome)
+                liste_des_sprites.add(fantome1)
+                liste_des_sprites.add(wall)
 
     if pause == False:
 
