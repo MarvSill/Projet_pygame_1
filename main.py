@@ -203,6 +203,11 @@ while running:
                 liste_des_sprites.remove(texte2)
                 perso = Pacman()
                 liste_des_sprites.add(perso)
+                liste_des_sprites.add(fantome)
+                liste_des_sprites.add(fantome1)
+                liste_des_sprites.add(wall)
+                #!!! RESET SCORE !!!#
+                #!!! BUG WITH A PACMAN THAT ISN'T MOVING AND KILLING THE PACMAN !!!#
 
     if pause == False:
 
