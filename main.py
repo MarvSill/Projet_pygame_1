@@ -54,6 +54,7 @@ class Welcome(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("welcomescreen.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (800, 550))
         self.rect = self.image.get_rect()
         self.rect.x = 0
         self.rect.y = 0
@@ -145,16 +146,6 @@ fantomes.append(fantome3)
 
 perso = Pacman()
 
-liste_des_sprites = pygame.sprite.Group()
-liste_des_sprites.add(welcome_screen)
-liste_des_sprites.add(fond)
-liste_des_sprites.add(perso)
-liste_des_sprites.add(fantome1)
-liste_des_sprites.add(fantome2)
-liste_des_sprites.add(fantome3)
-
-#liste_des_sprites est tout ce qui est afficher sur l'écran
-
 score = 0
 
 police = pygame.font.Font(None, 50)
@@ -169,24 +160,26 @@ texte2.rect = texte.image.get_rect()
 texte2.rect.centerx = fenetre.get_rect().centerx
 texte2.rect.centery = 330
 
+liste_des_sprites = pygame.sprite.Group()
+liste_des_sprites.add(fond)
+liste_des_sprites.add(perso)
+liste_des_sprites.add(fantome1)
+liste_des_sprites.add(fantome2)
+liste_des_sprites.add(fantome3)
+liste_des_sprites.add(welcome_screen)
+#liste_des_sprites est tout ce qui est afficher sur l'écran
 
 pause = False
-running = True
+running = False
+start = True
 direction = "droite"
 
-
-while running:
-    fenetre.fill((0, 0, 0))
-    liste_des_sprites.draw(fenetre)
-
-
-    for fantome in fantomes:
-        fantome.bouger_aleatoirement()
-
+while start:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            start = False
         if event.type == KEYDOWN:
+
             if event.key == K_RIGHT:
                 direction = "droite"
 
@@ -197,6 +190,21 @@ while running:
             if event.key == K_UP:
                 direction = "haut"
 
+            if event.key == K_s:
+                pause = False
+                direction = "droite"
+                liste_des_sprites.remove(texte)
+                liste_des_sprites.remove(texte2)
+                perso = Pacman()
+                liste_des_sprites.empty()
+                liste_des_sprites.add(fond)
+                liste_des_sprites.add(perso)
+                liste_des_sprites.add(fantomes)
+                walls = []
+                score = 0
+                texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
+                running = True
+
             if event.key == K_r and pause:
                 pause = False
                 direction = "droite"
@@ -206,79 +214,85 @@ while running:
                 liste_des_sprites.empty()
                 liste_des_sprites.add(fond)
                 liste_des_sprites.add(perso)
-                liste_des_sprites.add(fantome)
-                liste_des_sprites.add(fantome1)
-
-                liste_des_sprites.add(fantome3)
+                liste_des_sprites.add(fantomes)
                 walls = []
                 score = 0
                 texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
 
-                liste_des_sprites.add(wall)
 
+    if running:
 
-    if pause == False:
-
-        if direction == "droite":
-            perso.rect.x += 3
-            perso.tourne_vers_droit()
-
-        elif direction == "bas":
-            perso.rect.y += 3
-            perso.tourne_vers_bas()
-
-        elif direction == "gauche":
-            perso.rect.x -= 3
-            perso.tourne_vers_gauche()
-
-        elif direction == "haut":
-            perso.rect.y -= 3
-            perso.tourne_vers_haut()
-
-        if perso.destroy():
-            pause = True
-            liste_des_sprites.add(texte)
-            #le texte est afficher
-            liste_des_sprites.add(texte2)
-            for fantome in fantomes:
-                fantome.kill()
-            for wall in walls:
-                wall.kill()
 
         for fantome in fantomes:
-            if fantome.rect.colliderect(perso):
-                liste_des_sprites.remove(fantome)
-                fantomes.remove(fantome)
-                fantome.kill()
-                score += 1
-                texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
-                x_aleatoire_fantome = random.randint(20, LARGEUR - 40)
-                y_aleatoire_fantome = random.randint(20, HAUTEUR - 40)
-                nouveau_fantome = Fantome(x_aleatoire_fantome, y_aleatoire_fantome)
-                x_aleatoire_wall = random.randint(20, LARGEUR - 40)
-                y_aleatoire_wall = random.randint(20, HAUTEUR - 40)
-                nouveau_wall = Wall(x_aleatoire_wall, y_aleatoire_wall)
-                fantomes.append(nouveau_fantome)
-                walls.append(nouveau_wall)
-                liste_des_sprites.add(nouveau_fantome)
-                liste_des_sprites.add(nouveau_wall)
+            fantome.bouger_aleatoirement()
 
 
-        for wall in walls:
-            if wall.rect.colliderect(perso):
-                liste_des_sprites.remove(perso)
-                perso.kill()
+
+
+
+
+        if pause == False:
+
+            if direction == "droite":
+                perso.rect.x += 3
+                perso.tourne_vers_droit()
+
+            elif direction == "bas":
+                perso.rect.y += 3
+                perso.tourne_vers_bas()
+
+            elif direction == "gauche":
+                perso.rect.x -= 3
+                perso.tourne_vers_gauche()
+
+            elif direction == "haut":
+                perso.rect.y -= 3
+                perso.tourne_vers_haut()
+
+            if perso.destroy():
                 pause = True
                 liste_des_sprites.add(texte)
-                # le texte est afficher
+                #le texte est afficher
                 liste_des_sprites.add(texte2)
                 for fantome in fantomes:
                     fantome.kill()
                 for wall in walls:
                     wall.kill()
 
+            for fantome in fantomes:
+                if fantome.rect.colliderect(perso):
+                    liste_des_sprites.remove(fantome)
+                    fantomes.remove(fantome)
+                    fantome.kill()
+                    score += 1
+                    texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
+                    x_aleatoire_fantome = random.randint(20, LARGEUR - 40)
+                    y_aleatoire_fantome = random.randint(20, HAUTEUR - 40)
+                    nouveau_fantome = Fantome(x_aleatoire_fantome, y_aleatoire_fantome)
+                    x_aleatoire_wall = random.randint(20, LARGEUR - 40)
+                    y_aleatoire_wall = random.randint(20, HAUTEUR - 40)
+                    nouveau_wall = Wall(x_aleatoire_wall, y_aleatoire_wall)
+                    fantomes.append(nouveau_fantome)
+                    walls.append(nouveau_wall)
+                    liste_des_sprites.add(nouveau_fantome)
+                    liste_des_sprites.add(nouveau_wall)
 
 
+            for wall in walls:
+                if wall.rect.colliderect(perso):
+                    liste_des_sprites.remove(perso)
+                    perso.kill()
+                    pause = True
+                    liste_des_sprites.add(texte)
+                    # le texte est afficher
+                    liste_des_sprites.add(texte2)
+                    for fantome in fantomes:
+                        fantome.kill()
+                    for wall in walls:
+                        wall.kill()
+
+
+    liste_des_sprites.draw(fenetre)
     pygame.display.flip()
     clock.tick(60)
 
