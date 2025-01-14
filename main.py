@@ -114,6 +114,7 @@ y_aleatoire1 = random.randint(20, 400)
 x_aleatoire2 = random.randint(20, 400)
 y_aleatoire2 = random.randint(20, 400)
 
+
 fantome1 = Fantome(x_aleatoire1, y_aleatoire1)
 fantome2 = Fantome(x_aleatoire2, y_aleatoire2)
 fantome3 = Fantome(x_aleatoire2, y_aleatoire2)
@@ -192,10 +193,14 @@ while running:
                 liste_des_sprites.add(perso)
                 liste_des_sprites.add(fantome)
                 liste_des_sprites.add(fantome1)
+
                 liste_des_sprites.add(fantome3)
                 walls = []
                 score = 0
                 texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
+
+                liste_des_sprites.add(wall)
+
 
     if pause == False:
 
