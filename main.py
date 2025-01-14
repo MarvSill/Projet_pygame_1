@@ -50,11 +50,24 @@ HAUTEUR = 550
 fenetre = pygame.display.set_mode((LARGEUR, HAUTEUR))
 clock = pygame.time.Clock()
 
+class Welcome(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("welcomescreen.png").convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = 0
+        self.rect.y = 0
+
+welcome_screen = Welcome()
+
 fond = pygame.sprite.Sprite()
 fond.image = pygame.image.load("snakebackground.png").convert_alpha()
 fond.rect = fond.image.get_rect()
 fond.rect.x = 0
 fond.rect.y = 0
+
+
+
 
 class Wall(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -133,6 +146,7 @@ fantomes.append(fantome3)
 perso = Pacman()
 
 liste_des_sprites = pygame.sprite.Group()
+liste_des_sprites.add(welcome_screen)
 liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
@@ -164,6 +178,7 @@ direction = "droite"
 while running:
     fenetre.fill((0, 0, 0))
     liste_des_sprites.draw(fenetre)
+
 
     for fantome in fantomes:
         fantome.bouger_aleatoirement()
