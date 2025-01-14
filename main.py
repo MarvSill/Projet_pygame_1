@@ -88,7 +88,6 @@ class Fantome(pygame.sprite.Sprite):
         elif self.rect.x + 800 < LARGEUR:
             self.rect.x += 799
 
-
         self.changement_direction()
 
     def changement_direction(self):
@@ -110,13 +109,6 @@ class Fantome(pygame.sprite.Sprite):
             self.temps_du_dernier_changement = temps_actuel
 
 
-
-
-
-            #Changement de direction
-
-
-
 x_aleatoire1 = random.randint(20, 400)
 y_aleatoire1 = random.randint(20, 400)
 x_aleatoire2 = random.randint(20, 400)
@@ -125,9 +117,7 @@ y_aleatoire2 = random.randint(20, 400)
 
 fantome1 = Fantome(x_aleatoire1, y_aleatoire1)
 fantome2 = Fantome(x_aleatoire2, y_aleatoire2)
-
-wall1 = Wall(x_aleatoire1, y_aleatoire1)
-
+fantome3 = Fantome(x_aleatoire2, y_aleatoire2)
 
 x_aleatoire = random.randint(200, 400)
 y_aleatoire = random.randint(200, 400)
@@ -137,9 +127,7 @@ walls = []
 
 fantomes.append(fantome1)
 fantomes.append(fantome2)
-
-
-walls.append((wall1))
+fantomes.append(fantome3)
 
 
 perso = Pacman()
@@ -149,10 +137,9 @@ liste_des_sprites.add(fond)
 liste_des_sprites.add(perso)
 liste_des_sprites.add(fantome1)
 liste_des_sprites.add(fantome2)
-liste_des_sprites.add(wall1)
+liste_des_sprites.add(fantome3)
 
 #liste_des_sprites est tout ce qui est afficher sur l'écran
-
 
 score = 0
 
@@ -201,10 +188,19 @@ while running:
                 liste_des_sprites.remove(texte)
                 liste_des_sprites.remove(texte2)
                 perso = Pacman()
+                liste_des_sprites.empty()
+                liste_des_sprites.add(fond)
                 liste_des_sprites.add(perso)
                 liste_des_sprites.add(fantome)
                 liste_des_sprites.add(fantome1)
+
+                liste_des_sprites.add(fantome3)
+                walls = []
+                score = 0
+                texte2.image = police.render("Score : " + str(score), 1, (10, 10, 10), (0, 128, 128))
+
                 liste_des_sprites.add(wall)
+
 
     if pause == False:
 
